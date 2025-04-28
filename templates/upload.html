@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI-Driven Data Cleaning</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'myapp/favicon.ico' %}">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .container-fluid {
+            height: calc(100vh - 80px); /* Full height minus header */
+            display: flex;
+            flex-direction: row;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            height: 80px; /* Adjust header height */
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+        }
+        .logo {
+            height: 60px; /* Adjust logo size */
+        }
+        .sidebar {
+            width: 30%;
+            padding: 10px;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .main-content {
+            width: 70%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .scrollable-box {
+            padding: 0; /* Removed extra padding to ensure content fits */
+            border: 1px solid #ddd;
+            background-color: #fff;
+            overflow-y: auto;
+            height: 50%; /* Utilize 50% of the height of the parent container */
+            margin-bottom: 10px;
+            font-size: 0.8rem;
+            box-sizing: border-box;
+            position: relative;
+        }
+        .shape-box {
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            margin-bottom: 10px;
+        }
+        .heading {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .section-header {
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: left;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #ddd;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            margin: 0; /* Ensures the header fits properly */
+        }
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .flex-grow {
+            flex: 1;
+        }
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Styling for data preview and dataset info */
+        .data-preview {
+            width: 100%;
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            padding: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        table th, table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with two logos -->
+    <div class="header">
+        <!-- Left logo -->
+        <div>
+            <img src="{% static 'images/IP-logo.jpg' %}" class="logo" alt="Left Logo">
+        </div>
+        <!-- Right logo -->
+        <div>
+            <img src="{% static 'images/Crossroadelf-logo.jpg' %}" class="logo" alt="Right Logo">
+        </div>
+    </div>
+
+    <!-- Main content layout -->
+    <div class="container-fluid">
+        <div class="sidebar">
+            <div class="content-container">
+                <div>
+                    <h2 class="heading">AI-Driven Data Cleaning</h2>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="button-container">
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                            <button type="button" class="btn btn-secondary" onclick="window.location.href='{% url 'data_cleaning' %}';">Data Cleaning</button>
+                        </div>
+                    </form>
+                    <br>
+                    {% if shape %}
+                        <div class="shape-box">
+                            <strong>Dataset Shape:</strong> {{ shape }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% if info %}
+                    <div class="scrollable-box flex-grow">
+                        <div class="section-header">Dataset Info</div>
+                        <div class="data-preview">
+                            {{ info|safe }}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="main-content">
+            {% if table %}
+                <div class="scrollable-box flex-grow">
+                    <div class="section-header">Preview</div>
+                    <div class="data-preview">
+                        {{ table|safe }}
+                    </div>
+                </div>
+            {% elif error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
